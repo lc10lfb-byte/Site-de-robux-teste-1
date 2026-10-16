@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robux Store — Compra Segura</title>
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface-2: #16162a;
+    --border: #1f1f2e;
+    --border-2: #2a2a3a;
+    --text: #e8e8ec;
+    --text-dim: #9a9aa8;
+    --text-mute: #6a6a78;
+    --accent: #7c7cff;
+    --accent-hover: #6a6aff;
+    --success: #4dff88;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .logo {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(124, 124, 255, 0.1);
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+  h1 span { color: var(--accent); }
+  header p {
+    color: var(--text-dim);
+    font-size: 15px;
+  }
+
+  /* progresso */
+  .progresso {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .progresso .bolinha {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-2);
+    transition: all 0.3s;
+  }
+  .progresso .bolinha.ativa {
+    background: var(--accent);
+    width: 24px;
+    border-radius: 4px;
+  }
+  .progresso .bolinha.feita {
+    background: var(--accent);
+  }
+
+  /* passos */
+  .step {
+    display: none;
+    animation: fade 0.3s ease;
+  }
+  .step.ativo { display: block; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .card h2 {
+    font-size: 18px;
+    margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .card .desc {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* tabs */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-2) transparent;
+  }
+  .tabs::-webkit-scrollbar { height: 6px; }
+  .tabs::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
+  .tab {
+    flex-shrink: 0;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--accent); color: var(--text); }
+  .tab.ativa {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .resumo {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .resumo .qtd {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .resumo .preco {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .resumo .label {
+    font-size: 11px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  /* form */
+  .campo { margin-bottom: 16px; }
+  .campo label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+  .campo input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .campo input:focus { border-color: var(--accent); }
+  .campo small {
+    display: block;
+    color: var(--text-mute);
+    font-size: 12px;
+    margin-top: 6px;
+  }
+
+  .btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 8px;
+  }
+  .btn:hover { background: var(--accent-hover); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-secundario {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border-2);
+  }
+  .btn-secundario:hover { background: var(--border); }
+
+  .erro {
+    background: rgba(255, 77, 77, 0.1);
+    border: 1px solid rgba(255, 77, 77, 0.3);
+    color: #ff8a8a;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-top: 12px;
+    display: none;
+  }
+  .erro.ativo { display: block; }
+
+  /* pix */
+  .qr-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 16px;
+    width: fit-content;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 220px;
+    min-height: 220px;
+  }
+  .pix-info {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .pix-info .linha {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pix-info .linha:last-child { border-bottom: none; }
+  .pix-info .linha span:first-child { color: var(--text-dim); }
+  .pix-info .linha span:last-child {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .payload {
+    background: var(--bg);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'SF Mono', 'Consolas', monospace;
+    font-size: 11px;
+    word-break: break-all;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-bottom: 12px;
+    max-height: 120px;
+    overflow-y: auto;
+  }
+
+  /* confirmação */
+  .sucesso {
+    text-align: center;
+    padding: 8px 0 24px;
+  }
+  .sucesso .check {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(77, 255, 136, 0.1);
+    border: 2px solid var(--success);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 32px;
+    color: var(--success);
+  }
+  .sucesso h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .sucesso p {
+    color: var(--text-dim);
+    font-size: 15px;
+  }
+
+  .mensagem {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 24px 0 16px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre-line;
+  }
+
+  .discord-box {
+    background: linear-gradient(135deg, rgba(88, 101, 242, 0.15), rgba(88, 101, 242, 0.05));
+    border: 1px solid rgba(88, 101, 242, 0.4);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .discord-box .icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #5865F2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .discord-box .icon svg { width: 24px; height: 24px; fill: #fff; }
+  .discord-box .texto { flex: 1; }
+  .discord-box .texto strong { display: block; margin-bottom: 2px; font-size: 15px; }
+  .discord-box .texto span { color: var(--text-dim); font-size: 13px; }
+  .discord-box a {
+    background: #5865F2;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .rodape {
+    text-align: center;
+    color: var(--text-mute);
+    font-size: 12px;
+    margin-top: 40px;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 28px; }
+    .container { padding: 24px 16px 60px; }
+    .card { padding: 20px; }
+    .resumo { flex-direction: column; gap: 12px; align-items: flex-start; }
+    .discord-box { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo">Entrega via Gamepass</div>
+    <h1>Robux <span>Store</span></h1>
+    <p>Compra segura · Pagamento via Pix · Entrega guiada</p>
+  </header>
+
+  <div class="progresso">
+    <div class="bolinha ativa" data-step="1"></div>
+    <div class="bolinha" data-step="2"></div>
+    <div class="bolinha" data-step="3"></div>
+    <div class="bolinha" data-step="4"></div>
+  </div>
+
+  <!-- PASSO 1: escolher pacote -->
+  <section class="step ativo" id="step1">
+    <div class="card">
+      <h2>Escolha seu pacote</h2>
+      <p class="desc">Selecione a quantidade de Robux que deseja comprar.</p>
+
+      <div class="tabs" id="tabs"></div>
+
+      <div class="resumo" id="resumo" style="display:none;">
+        <div>
+          <div class="label">Você recebe</div>
+          <div class="qtd" id="resumoQtd"></div>
+        </div>
+        <div style="text-align:right;">
+          <div class="label">Total</div>
+          <div class="preco" id="resumoPreco"></div>
+        </div>
+      </div>
+
+      <button class="btn" id="btnContinuar" onclick="irParaStep2()" disabled>Continuar</button>
+    </div>
+  </section>
+
+  <!-- PASSO 2: dados -->
+  <section class="step" id="step2">
+    <div class="card">
+      <h2>Seus dados</h2>
+      <p class="desc">Precisamos do seu username do Roblox e um e-mail para o comprovante.</p>
+
+      <div class="campo">
+        <label for="username">Username do Roblox</label>
+        <input type="text" id="username" placeholder="ex: seu_username" autocomplete="off">
+        <small>Exatamente como aparece no seu perfil.</small>
+      </div>
+
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com" autocomplete="off">
+        <small>O comprovante será enviado para este endereço.</small>
+      </div>
+
+      <div class="erro" id="erroStep2"></div>
+
+      <button class="btn" onclick="gerarPagamento()">Gerar pagamento Pix</button>
+      <button class="btn btn-secundario" onclick="irParaStep1()">Voltar</button>
+    </div>
+  </section>
+
+  <!-- PASSO 3: pix -->
+  <section class="step" id="step3">
+    <div class="card">
+      <h2>Pagamento via Pix</h2>
+      <p class="desc">Abra o app do seu banco e escaneie o QR Code ou copie o código abaixo.</p>
+
+      <div class="qr-box" id="qrcode"></div>
+
+      <div class="pix-info">
+        <div class="linha"><span>Pacote</span><span id="infoPacote"></span></div>
+        <div class="linha"><span>Valor</span><span id="infoValor"></span></div>
+        <div class="linha"><span>Identificador</span><span id="infoTxid"></span></div>
+      </div>
+
+      <div class="payload" id="payload"></div>
+
+      <button class="btn btn-secundario" onclick="copiarPix()" id="btnCopiar">Copiar código Pix</button>
+      <button class="btn" onclick="confirmarPagamento()" style="margin-top:12px;">Já realizei o pagamento</button>
+      <button class="btn btn-secundario" onclick="irParaStep2()">Voltar</button>
+    </div>
+  </section>
+
+  <!-- PASSO 4: confirmação -->
+  <section class="step" id="step4">
+    <div class="card">
+      <div class="sucesso">
+        <div class="check">✓</div>
+        <h2>Pedido registrado</h2>
+        <p>Agora falta só um passo para receber seus Robux.</p>
+      </div>
+
+      <div class="mensagem" id="mensagemFinal"></div>
+
+      <div class="discord-box">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.099.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+        </div>
+        <div class="texto">
+          <strong>Servidor de Suporte</strong>
+          <span>Envie o comprovante por lá para liberar sua entrega.</span>
+        </div>
+        <a href="https://discord.gg/SEU_CONVITE" target="_blank" rel="noopener">Abrir Discord</a>
+      </div>
+
+      <button class="btn btn-secundario" onclick="copiarMensagem()" style="margin-top:16px;" id="btnCopiarMsg">
+        Copiar mensagem
+      </button>
+      <button class="btn btn-secundario" onclick="novoPedido()">Fazer novo pedido</button>
+    </div>
+  </section>
+
+  <div class="rodape">
+    Entrega realizada via gamepass seguindo as diretrizes da plataforma.<br>
+    Em caso de dúvidas, o suporte é feito exclusivamente pelo Discord.
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURAÇÃO — edite aqui
+   ============================================================ */
+const CONFIG = {
+  // Pix
+  PIX_KEY: '4c3805c3-a89b-4275-a721-4efe4e2bc75b',
+  PIX_NOME: 'ROBUX STORE',
+  PIX_CIDADE: 'SAO PAULO',
+
+  // Discord
+  DISCORD_LINK: 'https://discord.gg/SEU_CONVITE',
+
+  // EmailJS — crie conta grátis em emailjs.com
+  // Se deixar vazio, o e-mail não é enviado (a tela de confirmação aparece normal)
+  EMAILJS_PUBLIC_KEY: '',    // ex: 'aBcD1234XyZ...'
+  EMAILJS_SERVICE_ID: '',    // ex: 'service_abc123'
+  EMAILJS_TEMPLATE_ID: '',   // ex: 'template_xyz789'
+};
+
+/* Pacotes: Robux + preço em reais. Edite os preços como quiser. */
+const PACKS = [
+  { robux: 200,  preco: 10  },
+  { robux: 300,  preco: 15  },
+  { robux: 400,  preco: 20  },
+  { robux: 500,  preco: 25  },
+  { robux: 600,  preco: 30  },
+  { robux: 700,  preco: 35  },
+  { robux: 800,  preco: 40  },
+  { robux: 900,  preco: 45  },
+  { robux: 1000, preco: 50  },
+  { robux: 1200, preco: 60  },
+  { robux: 1500, preco: 75  },
+  { robux: 2000, preco: 100 },
+];
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+let packSelecionado = null;
+let pedidoAtual = null;
+
+/* ============================================================
+   NAVEGAÇÃO
+   ============================================================ */
+function irParaStep(n) {
+  document.querySelectorAll('.step').forEach(el => el.classList.remove('ativo'));
+  document.getElementById('step' + n).classList.add('ativo');
+  document.querySelectorAll('.progresso .bolinha').forEach(el => {
+    const s = parseInt(el.dataset.step);
+    el.classList.toggle('ativa', s === n);
+    el.classList.toggle('feita', s < n);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function irParaStep1() { irParaStep(1); }
+function irParaStep2() {
+  if (!packSelecionado) return;
+  irParaStep(2);
+}
+
+/* ============================================================
+   TABS DE PACOTES
+   ============================================================ */
+function renderizarTabs() {
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = PACKS.map((p, i) => `
+    <button class="tab" data-idx="${i}">${p.robux.toLocaleString('pt-BR')} Robux</button>
+  `).join('');
+
+  tabs.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => selecionarPack(parseInt(btn.dataset.idx)));
+  });
+}
+
+function selecionarPack(idx) {
+  packSelecionado = PACKS[idx];
+
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    el.classList.toggle('ativa', i === idx);
+  });
+
+  document.getElementById('resumo').style.display = 'flex';
+  document.getElementById('resumoQtd').textContent = packSelecionado.robux.toLocaleString('pt-BR') + ' Robux';
+  document.getElementById('resumoPreco').textContent = 'R$ ' + packSelecionado.preco.toFixed(2).replace('.', ',');
+  document.getElementById('btnContinuar').disabled = false;
+}
+
+/* ============================================================
+   PIX — geração do payload EMV
+   ============================================================ */
+function tlv(id, value) {
+  const len = String(value.length).padStart(2, '0');
+  return id + len + value;
+}
+
+function crc16(str) {
+  let crc = 0xFFFF;
+  for (let i = 0; i < str.length; i++) {
+    crc ^= str.charCodeAt(i) << 8;
+    for (let j = 0; j < 8; j++) {
+      crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) : (crc << 1);
+      crc &= 0xFFFF;
+    }
+  }
+  return crc.toString(16).toUpperCase().padStart(4, '0');
+}
+
+function limparAscii(str, max) {
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^A-Za-z0-9 ]/g, '')
+    .toUpperCase()
+    .slice(0, max);
+}
+
+function gerarTxid() {
+  const rand = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const ts = Date.now().toString(36).slice(-4).toUpperCase();
+  return 'RBX' + ts + rand;
+}
+
+function gerarPixPayload(valor, txid) {
+  const nome = limparAscii(CONFIG.PIX_NOME, 25);
+  const cidade = limparAscii(CONFIG.PIX_CIDADE, 15);
+
+  const gui = tlv('00', 'br.gov.bcb.pix') + tlv('01', CONFIG.PIX_KEY);
+
+  const semCrc =
+    tlv('00', '01') +
+    tlv('26', gui) +
+    tlv('52', '0000') +
+    tlv('53', '986') +
+    tlv('54', valor.toFixed(2)) +
+    tlv('58', 'BR') +
+    tlv('59', nome) +
+    tlv('60', cidade) +
+    tlv('62', tlv('05', txid)) +
+    '6304';
+
+  return semCrc + crc16(semCrc);
+}
+
+/* ============================================================
+   GERAR PAGAMENTO
+   ============================================================ */
+function gerarPagamento() {
+  const username = document.getElementById('username').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const erro = document.getElementById('erroStep2');
+  erro.classList.remove('ativo');
+
+  if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) {
+    erro.textContent = 'Username inválido. Use 3 a 20 caracteres (letras, números e _).';
+    erro.classList.add('ativo');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    erro.textContent = 'E-mail inválido.';
+    erro.classList.add('ativo');
+    return;
+  }
+
+  const txid = gerarTxid();
+  const payload = gerarPixPayload(packSelecionado.preco, txid);
+
+  pedidoAtual = {
+    username,
+    email,
+    robux: packSelecionado.robux,
+    preco: packSelecionado.preco,
+    txid,
+    payload,
+    criadoEm: new Date(),
+  };
+
+  // Renderiza Pix
+  document.getElementById('infoPacote').textContent = packSelecionado.robux.toLocaleString('pt-BR') + ' Robux';
+  document.getElementById('infoValor').textContent = 'R$ ' + packSelecionado.preco.toFixed(2).replace('.', ',');
+  document.getElementById('infoTxid').textContent = txid;
+  document.getElementById('payload').textContent = payload;
+
+  const qrContainer = document.getElementById('qrcode');
+  qrContainer.innerHTML = '';
+  new QRCode(qrContainer, {
+    text: payload,
+    width: 200,
+    height: 200,
+    colorDark: '#000000',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M,
+  });
+
+  irParaStep(3);
+}
+
+/* ============================================================
+   COPIAR
+   ============================================================ */
+async function copiarPix() {
+  if (!pedidoAtual) return;
+  try {
+    await navigator.clipboard.writeText(pedidoAtual.payload);
+    const btn = document.getElementById('btnCopiar');
+    const original = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = original, 2000);
+  } catch (e) {
+    alert('Não foi possível copiar. Selecione o código manualmente.');
+  }
+}
+
+/* ============================================================
+   CONFIRMAR PAGAMENTO → passo 4
+   ============================================================ */
+async function confirmarPagamento() {
+  if (!pedidoAtual) return;
+
+  // Dispara e-mail em background (não bloqueia a UI)
+  enviarEmail(pedidoAtual).catch(() => {});
+
+  // Monta a mensagem profissional
+  const mensagem =
+`Pedido ${pedidoAtual.txid} registrado.
+
+Recebemos sua solicitação de ${pedidoAtual.robux.toLocaleString('pt-BR')} Robux no valor de R$ ${pedidoAtual.preco.toFixed(2).replace('.', ',')}.
+
+Para concluir a entrega, tire um print desta tela e envie junto com o comprovante de pagamento no nosso servidor do Discord.
+
+Nossa equipe irá te orientar passo a passo na criação da gamepass para você receber seus Robux com segurança.`;
+
+  document.getElementById('mensagemFinal').textContent = mensagem;
+  irParaStep(4);
+}
+
+async function copiarMensagem() {
+  const msg = document.getElementById('mensagemFinal').textContent;
+  try {
+    await navigator.clipboard.writeText(msg);
+    const btn = document.getElementById('btnCopiarMsg');
+    const original = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = original, 2000);
+  } catch (e) {}
+}
+
+/* ============================================================
+   ENVIO DE E-MAIL (EmailJS)
+   ============================================================ */
+async function enviarEmail(pedido) {
+  if (!CONFIG.EMAILJS_PUBLIC_KEY || !CONFIG.EMAILJS_SERVICE_ID || !CONFIG.EMAILJS_TEMPLATE_ID) {
+    // não configurado — apenas ignora
+    return;
+  }
+
+  try {
+    emailjs.init({ publicKey: CONFIG.EMAILJS_PUBLIC_KEY });
+
+    const corpoEmail =
+`Pedido ${pedido.txid} registrado.
+
+Recebemos sua solicitação de ${pedido.robux.toLocaleString('pt-BR')} Robux no valor de R$ ${pedido.preco.toFixed(2).replace('.', ',')}.
+
+Para concluir a entrega, tire um print desta mensagem e envie junto com o comprovante de pagamento no nosso servidor do Discord:
+${CONFIG.DISCORD_LINK}
+
+Nossa equipe irá te orientar passo a passo na criação da gamepass para você receber seus Robux com segurança.`;
+
+    await emailjs.send(CONFIG.EMAILJS_SERVICE_ID, CONFIG.EMAILJS_TEMPLATE_ID, {
+      to_email: pedido.email,
+      to_name: pedido.username,
+      subject: `Pedido ${pedido.txid} — Robux Store`,
+      message: corpoEmail,
+      txid: pedido.txid,
+      robux: pedido.robux,
+      preco: pedido.preco.toFixed(2),
+      discord_link: CONFIG.DISCORD_LINK,
+    });
+  } catch (e) {
+    console.warn('Falha ao enviar e-mail:', e);
+  }
+}
+
+/* ============================================================
+   NOVO PEDIDO
+   ============================================================ */
+function novoPedido() {
+  packSelecionado = null;
+  pedidoAtual = null;
+  document.getElementById('username').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('resumo').style.display = 'none';
+  document.getElementById('btnContinuar').disabled = true;
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('ativa'));
+  irParaStep(1);
+}
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
+renderizarTabs();
+</script>
+</body>
+  </html>
