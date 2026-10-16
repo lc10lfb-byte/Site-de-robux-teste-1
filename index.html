@@ -1,600 +1,2637 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<!-- ═══════════════════════════════════════════════════════════════
+     ROBUX STORE — Landing Page Premium
+     Design: dark · premium · confiável
+     Stack: HTML + CSS + JS puros (single file)
+     ═══════════════════════════════════════════════════════════════ -->
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Robux Store — Compra Segura</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#06060a">
+<meta name="description" content="Robux Store — compre Robux com segurança, entrega guiada via gamepass e suporte dedicado no Discord.">
+<title>Robux Store — Compra Segura de Robux</title>
+
+<!-- Fontes -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Bibliotecas -->
 <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface-2: #16162a;
-    --border: #1f1f2e;
-    --border-2: #2a2a3a;
-    --text: #e8e8ec;
-    --text-dim: #9a9aa8;
-    --text-mute: #6a6a78;
-    --accent: #7c7cff;
-    --accent-hover: #6a6aff;
-    --success: #4dff88;
-  }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-  }
-  .container {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 40px 20px 80px;
-  }
-  header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  .logo {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: rgba(124, 124, 255, 0.1);
-    padding: 6px 14px;
-    border-radius: 20px;
-    margin-bottom: 16px;
-  }
-  h1 {
-    font-size: 34px;
-    font-weight: 800;
-    letter-spacing: -1px;
-    margin-bottom: 8px;
-  }
-  h1 span { color: var(--accent); }
-  header p {
-    color: var(--text-dim);
-    font-size: 15px;
-  }
+/* ═══════════════════════════════════════════════════════════════
+   1. VARIÁVEIS E TOKENS DE DESIGN
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* Cores — base */
+  --bg-0: #05050a;
+  --bg-1: #08080e;
+  --bg-2: #0c0c14;
+  --surface-1: #10101a;
+  --surface-2: #15151f;
+  --surface-3: #1c1c28;
+  --surface-4: #232330;
 
-  /* progresso */
-  .progresso {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 32px;
-  }
-  .progresso .bolinha {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--border-2);
-    transition: all 0.3s;
-  }
-  .progresso .bolinha.ativa {
-    background: var(--accent);
-    width: 24px;
-    border-radius: 4px;
-  }
-  .progresso .bolinha.feita {
-    background: var(--accent);
-  }
+  /* Bordas */
+  --border-1: rgba(255, 255, 255, 0.06);
+  --border-2: rgba(255, 255, 255, 0.10);
+  --border-3: rgba(255, 255, 255, 0.16);
+  --border-accent: rgba(124, 118, 255, 0.35);
 
-  /* passos */
-  .step {
-    display: none;
-    animation: fade 0.3s ease;
-  }
-  .step.ativo { display: block; }
-  @keyframes fade {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  /* Texto */
+  --text-1: #f5f5fa;
+  --text-2: #c8c8d4;
+  --text-3: #9a9aa8;
+  --text-4: #6a6a78;
+  --text-5: #4a4a58;
 
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-  }
+  /* Accent — roxo/azul */
+  --accent-1: #8b5cf6;
+  --accent-2: #6366f1;
+  --accent-3: #a78bfa;
+  --accent-soft: rgba(139, 92, 246, 0.12);
+  --accent-glow: rgba(139, 92, 246, 0.35);
 
-  .card h2 {
-    font-size: 18px;
-    margin-bottom: 6px;
-    font-weight: 700;
-  }
-  .card .desc {
-    color: var(--text-dim);
-    font-size: 14px;
-    margin-bottom: 24px;
-  }
+  /* Estados */
+  --success: #10b981;
+  --success-soft: rgba(16, 185, 129, 0.12);
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --danger-soft: rgba(239, 68, 68, 0.10);
 
-  /* tabs */
-  .tabs {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 12px;
-    margin-bottom: 20px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-2) transparent;
-  }
-  .tabs::-webkit-scrollbar { height: 6px; }
-  .tabs::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+  /* Sombras */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --shadow-xl: 0 24px 80px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.25);
 
-  .tab {
-    flex-shrink: 0;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .tab:hover { border-color: var(--accent); color: var(--text); }
-  .tab.ativa {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
+  /* Raios */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-full: 9999px;
 
-  .resumo {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .resumo .qtd {
-    font-size: 22px;
-    font-weight: 700;
-  }
-  .resumo .preco {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--accent);
-  }
-  .resumo .label {
-    font-size: 11px;
-    color: var(--text-mute);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
+  /* Tipografia */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
 
-  /* form */
-  .campo { margin-bottom: 16px; }
-  .campo label {
-    display: block;
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 600;
-  }
-  .campo input {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border-2);
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: var(--text);
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-  .campo input:focus { border-color: var(--accent); }
-  .campo small {
-    display: block;
-    color: var(--text-mute);
-    font-size: 12px;
-    margin-top: 6px;
-  }
+  /* Espaçamento */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
 
-  .btn {
-    width: 100%;
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    padding: 16px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.15s;
-    margin-top: 8px;
-  }
-  .btn:hover { background: var(--accent-hover); }
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-secundario {
-    background: var(--surface-2);
-    color: var(--text);
-    border: 1px solid var(--border-2);
-  }
-  .btn-secundario:hover { background: var(--border); }
+  /* Transições */
+  --t-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --t-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --t-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  --t-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
-  .erro {
-    background: rgba(255, 77, 77, 0.1);
-    border: 1px solid rgba(255, 77, 77, 0.3);
-    color: #ff8a8a;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 14px;
-    margin-top: 12px;
-    display: none;
-  }
-  .erro.ativo { display: block; }
+/* ═══════════════════════════════════════════════════════════════
+   2. RESET E BASE
+   ═══════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  /* pix */
-  .qr-box {
-    background: #fff;
-    padding: 20px;
-    border-radius: 16px;
-    width: fit-content;
-    margin: 0 auto 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 220px;
-    min-height: 220px;
-  }
-  .pix-info {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-  .pix-info .linha {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    font-size: 14px;
-    border-bottom: 1px solid var(--border);
-  }
-  .pix-info .linha:last-child { border-bottom: none; }
-  .pix-info .linha span:first-child { color: var(--text-dim); }
-  .pix-info .linha span:last-child {
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-  .payload {
-    background: var(--bg);
-    border: 1px solid var(--border-2);
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-family: 'SF Mono', 'Consolas', monospace;
-    font-size: 11px;
-    word-break: break-all;
-    color: var(--text-dim);
-    line-height: 1.5;
-    margin-bottom: 12px;
-    max-height: 120px;
-    overflow-y: auto;
-  }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-0);
+  color: var(--text-1);
+  line-height: 1.55;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
 
-  /* confirmação */
-  .sucesso {
-    text-align: center;
-    padding: 8px 0 24px;
-  }
-  .sucesso .check {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background: rgba(77, 255, 136, 0.1);
-    border: 2px solid var(--success);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 32px;
-    color: var(--success);
-  }
-  .sucesso h2 {
-    font-size: 24px;
-    margin-bottom: 8px;
-  }
-  .sucesso p {
-    color: var(--text-dim);
-    font-size: 15px;
-  }
+img, svg, video { display: block; max-width: 100%; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { background: none; border: none; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
 
-  .mensagem {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 10px;
-    padding: 20px;
-    margin: 24px 0 16px;
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text);
-    white-space: pre-line;
-  }
+::selection {
+  background: var(--accent-1);
+  color: #fff;
+}
 
-  .discord-box {
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.15), rgba(88, 101, 242, 0.05));
-    border: 1px solid rgba(88, 101, 242, 0.4);
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 16px;
-  }
-  .discord-box .icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    background: #5865F2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .discord-box .icon svg { width: 24px; height: 24px; fill: #fff; }
-  .discord-box .texto { flex: 1; }
-  .discord-box .texto strong { display: block; margin-bottom: 2px; font-size: 15px; }
-  .discord-box .texto span { color: var(--text-dim); font-size: 13px; }
-  .discord-box a {
-    background: #5865F2;
-    color: #fff;
-    text-decoration: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
+/* Scrollbar customizada */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-0); }
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 10px;
+  border: 2px solid var(--bg-0);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--surface-4); }
 
-  .rodape {
-    text-align: center;
-    color: var(--text-mute);
-    font-size: 12px;
-    margin-top: 40px;
-    line-height: 1.7;
-  }
+/* ═══════════════════════════════════════════════════════════════
+   3. FUNDO ANIMADO — orbes de luz + noise
+   ═══════════════════════════════════════════════════════════════ */
+.bg-layers {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
 
-  @media (max-width: 480px) {
-    h1 { font-size: 28px; }
-    .container { padding: 24px 16px 60px; }
-    .card { padding: 20px; }
-    .resumo { flex-direction: column; gap: 12px; align-items: flex-start; }
-    .discord-box { flex-direction: column; text-align: center; }
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.5;
+  will-change: transform;
+}
+
+.bg-orb--1 {
+  width: 600px;
+  height: 600px;
+  top: -200px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.45), transparent 70%);
+  animation: orbFloat1 22s ease-in-out infinite;
+}
+
+.bg-orb--2 {
+  width: 500px;
+  height: 500px;
+  top: 30%;
+  right: -150px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35), transparent 70%);
+  animation: orbFloat2 28s ease-in-out infinite;
+}
+
+.bg-orb--3 {
+  width: 700px;
+  height: 700px;
+  bottom: -300px;
+  left: 30%;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.25), transparent 70%);
+  animation: orbFloat3 32s ease-in-out infinite;
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(120px, 80px) scale(1.1); }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-100px, 100px) scale(1.15); }
+}
+
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-150px, -80px) scale(1.08); }
+}
+
+/* Grid sutil */
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 100%);
+}
+
+/* Noise */
+.bg-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* Vinheta */
+.bg-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, transparent 30%, rgba(5, 5, 10, 0.6) 100%);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   4. PRELOADER
+   ═══════════════════════════════════════════════════════════════ */
+.preloader {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-0);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.preloader-inner {
+  text-align: center;
+}
+
+.preloader-logo {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.preloader-bar {
+  width: 200px;
+  height: 3px;
+  background: var(--surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.preloader-bar::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  border-radius: 3px;
+  animation: preloadBar 1.2s ease-in-out infinite;
+}
+
+@keyframes preloadBar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   5. CONTAINER E UTILITÁRIOS
+   ═══════════════════════════════════════════════════════════════ */
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.container--narrow {
+  max-width: 820px;
+}
+
+.section {
+  padding: 100px 0;
+  position: relative;
+}
+
+.section--sm { padding: 60px 0; }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent-3);
+  background: var(--accent-soft);
+  border: 1px solid var(--border-accent);
+  padding: 8px 16px;
+  border-radius: var(--r-full);
+  margin-bottom: 20px;
+}
+
+.eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-3);
+  box-shadow: 0 0 8px var(--accent-3);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.section-title .gradient {
+  background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-3) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-sub {
+  font-size: 17px;
+  color: var(--text-3);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.section-head {
+  margin-bottom: 60px;
+}
+
+.section-head--center {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.section-head--center .section-sub { margin: 0 auto; }
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   6. BOTÕES
+   ═══════════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: all var(--t-base);
+  border: 1px solid transparent;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: -0.1px;
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: #fff;
+  box-shadow: 0 4px 24px rgba(139, 92, 246, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.btn--primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn--primary:active:not(:disabled) { transform: translateY(0); }
+
+.btn--primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn--primary:hover::before { left: 100%; }
+
+.btn--ghost {
+  background: var(--surface-2);
+  color: var(--text-1);
+  border-color: var(--border-2);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: var(--surface-3);
+  border-color: var(--border-3);
+  transform: translateY(-1px);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--text-2);
+  border-color: var(--border-2);
+}
+
+.btn--outline:hover:not(:disabled) {
+  border-color: var(--border-accent);
+  color: var(--text-1);
+  background: var(--accent-soft);
+}
+
+.btn--block { width: 100%; }
+.btn--lg { padding: 18px 32px; font-size: 16px; }
+.btn--sm { padding: 10px 18px; font-size: 13px; }
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   7. HEADER / NAV
+   ═══════════════════════════════════════════════════════════════ */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 16px 0;
+  transition: all var(--t-base);
+  backdrop-filter: blur(0);
+}
+
+.header.scrolled {
+  background: rgba(5, 5, 10, 0.75);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border-1);
+  padding: 12px 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.logo-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+  position: relative;
+}
+
+.logo-mark::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.logo-mark svg {
+  width: 18px;
+  height: 18px;
+  fill: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+.logo-text { color: var(--text-1); }
+.logo-text span { color: var(--accent-3); }
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-3);
+  border-radius: var(--r-sm);
+  transition: all var(--t-fast);
+}
+
+.nav-link:hover {
+  color: var(--text-1);
+  background: var(--surface-2);
+}
+
+.header-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-3);
+  padding: 6px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-full);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@media (max-width: 860px) {
+  .nav { display: none; }
+  .header-status { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   8. HERO
+   ═══════════════════════════════════════════════════════════════ */
+.hero {
+  padding: 160px 0 100px;
+  position: relative;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-size: clamp(40px, 7vw, 76px);
+  font-weight: 900;
+  letter-spacing: -3px;
+  line-height: 1;
+  margin-bottom: 24px;
+  background: linear-gradient(180deg, #fff 0%, #b8b8c8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-title .accent {
+  background: linear-gradient(135deg, var(--accent-3) 0%, var(--accent-1) 50%, var(--accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2vw, 19px);
+  color: var(--text-3);
+  max-width: 580px;
+  margin: 0 auto 40px;
+  line-height: 1.65;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 56px;
+}
+
+.hero-trust {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-1);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+.trust-item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-3);
+  flex-shrink: 0;
+}
+
+/* Floating badges */
+.hero-visual {
+  position: relative;
+  margin-top: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.hero-card {
+  background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-lg);
+  padding: 20px 24px;
+  min-width: 220px;
+  text-align: left;
+  transition: transform var(--t-slow), border-color var(--t-base);
+  box-shadow: var(--shadow-lg);
+}
+
+.hero-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-accent);
+}
+
+.hero-card-label {
+  font-size: 11px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.hero-card-value {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text-1);
+}
+
+.hero-card-value.accent {
+  background: linear-gradient(135deg, var(--accent-3), var(--accent-1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   9. STATS BAR
+   ═══════════════════════════════════════════════════════════════ */
+.stats {
+  padding: 40px 0;
+  border-top: 1px solid var(--border-1);
+  border-bottom: 1px solid var(--border-1);
+  background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.03));
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 4px;
+  background: linear-gradient(135deg, var(--accent-3), var(--accent-1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 32px 16px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   10. FEATURES
+   ═══════════════════════════════════════════════════════════════ */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.feature {
+  background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  padding: 32px 28px;
+  transition: all var(--t-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-1), transparent);
+  opacity: 0;
+  transition: opacity var(--t-base);
+}
+
+.feature:hover {
+  border-color: var(--border-2);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature:hover::before { opacity: 1; }
+
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  border: 1px solid var(--border-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: var(--accent-3);
+}
+
+.feature-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.feature h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+
+.feature p {
+  font-size: 14px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+@media (max-width: 860px) {
+  .features-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   11. STEPS / COMO FUNCIONA
+   ═══════════════════════════════════════════════════════════════ */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+}
+
+.step-item {
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  position: relative;
+  transition: all var(--t-base);
+}
+
+.step-item:hover {
+  border-color: var(--border-2);
+  background: var(--surface-2);
+}
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  color: #fff;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
+}
+
+.step-item h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.2px;
+}
+
+.step-item p {
+  font-size: 13px;
+  color: var(--text-3);
+  line-height: 1.6;
+}
+
+@media (max-width: 860px) {
+  .steps { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+  .steps { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   12. PACOTES
+   ═══════════════════════════════════════════════════════════════ */
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.package {
+  background: linear-gradient(180deg, var(--surface-1), var(--surface-2));
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: all var(--t-base);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.package::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), transparent);
+  opacity: 0;
+  transition: opacity var(--t-base);
+  pointer-events: none;
+}
+
+.package:hover {
+  border-color: var(--border-2);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.package:hover::after { opacity: 1; }
+
+.package.selected {
+  border-color: var(--accent-1);
+  box-shadow: 0 0 0 1px var(--accent-1),
+              0 8px 32px rgba(139, 92, 246, 0.3);
+}
+
+.package.selected::after { opacity: 1; }
+
+.package-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  padding: 4px 8px;
+  border-radius: var(--r-full);
+  z-index: 1;
+}
+
+.package-robux {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 2px;
+  color: var(--text-1);
+  position: relative;
+  z-index: 1;
+}
+
+.package-robux-label {
+  font-size: 11px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.package-price {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent-3);
+  letter-spacing: -0.5px;
+  position: relative;
+  z-index: 1;
+}
+
+.package-price small {
+  font-size: 12px;
+  color: var(--text-4);
+  font-weight: 500;
+  display: block;
+  margin-top: 2px;
+  letter-spacing: 0;
+}
+
+@media (max-width: 860px) {
+  .packages-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 640px) {
+  .packages-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .package { padding: 20px 14px; }
+  .package-robux { font-size: 20px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   13. CHECKOUT MODAL / FLOW
+   ═══════════════════════════════════════════════════════════════ */
+.checkout {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 3, 8, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--t-base), visibility var(--t-base);
+}
+
+.checkout.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.checkout-modal {
+  background: var(--bg-1);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-xl);
+  width: 100%;
+  max-width: 520px;
+  box-shadow: var(--shadow-xl), 0 0 80px rgba(139, 92, 246, 0.15);
+  transform: translateY(20px) scale(0.98);
+  transition: transform var(--t-spring);
+  overflow: hidden;
+  position: relative;
+  margin: auto;
+}
+
+.checkout.open .checkout-modal {
+  transform: translateY(0) scale(1);
+}
+
+.checkout-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  z-index: 10;
+  transition: all var(--t-fast);
+}
+
+.checkout-close:hover {
+  background: var(--surface-3);
+  color: var(--text-1);
+  transform: rotate(90deg);
+}
+
+.checkout-close svg { width: 16px; height: 16px; }
+
+.checkout-header {
+  padding: 28px 28px 0;
+  text-align: center;
+}
+
+.checkout-title {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.checkout-desc {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+/* Progress dots */
+.progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 28px;
+}
+
+.progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  transition: all var(--t-base);
+}
+
+.progress-dot.active {
+  width: 28px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.progress-dot.done { background: var(--accent-1); }
+
+/* Painéis */
+.checkout-body {
+  padding: 0 28px 28px;
+  position: relative;
+}
+
+.panel {
+  display: none;
+  animation: panelIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.panel.active { display: block; }
+
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Resumo do pedido */
+.summary {
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.summary-left .label,
+.summary-right .label {
+  font-size: 10px;
+  color: var(--text-4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.summary-left .value {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.summary-right {
+  text-align: right;
+}
+
+.summary-right .value {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--accent-3), var(--accent-1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Campos */
+.field {
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.field-input {
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  color: var(--text-1);
+  font-size: 15px;
+  outline: none;
+  transition: all var(--t-fast);
+  font-family: var(--font-body);
+}
+
+.field-input::placeholder { color: var(--text-5); }
+
+.field-input:focus {
+  border-color: var(--accent-1);
+  background: var(--surface-1);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field-hint {
+  font-size: 12px;
+  color: var(--text-4);
+  margin-top: 6px;
+  display: block;
+}
+
+.field-error {
+  font-size: 12px;
+  color: var(--danger);
+  margin-top: 6px;
+  display: none;
+}
+
+.field-error.active { display: block; }
+
+/* Erro geral */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+  border: 1px solid;
+}
+
+.alert.active { display: block; }
+
+.alert--error {
+  background: var(--danger-soft);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.alert--info {
+  background: var(--accent-soft);
+  border-color: var(--border-accent);
+  color: var(--accent-3);
+}
+
+/* Painel Pix */
+.pix-qr {
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: 16px;
+  width: fit-content;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
+  min-height: 220px;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.pix-qr::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  opacity: 0.15;
+  filter: blur(20px);
+  z-index: -1;
+}
+
+.pix-qr canvas,
+.pix-qr img {
+  border-radius: 8px;
+}
+
+.pix-info {
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.pix-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-1);
+}
+
+.pix-info-row:last-child { border-bottom: none; }
+.pix-info-row:first-child { padding-top: 0; }
+
+.pix-info-row .k { color: var(--text-3); }
+.pix-info-row .v {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+}
+
+.pix-info-row .v.accent {
+  background: linear-gradient(135deg, var(--accent-3), var(--accent-1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pix-payload {
+  background: var(--bg-0);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+  word-break: break-all;
+  line-height: 1.6;
+  max-height: 100px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.pix-timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 16px;
+}
+
+.pix-timer svg { width: 14px; height: 14px; }
+
+/* Sucesso */
+.success-check {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--success-soft);
+  border: 2px solid var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px auto 20px;
+  color: var(--success);
+  animation: successPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 32px rgba(16, 185, 129, 0.3);
+}
+
+.success-check svg { width: 32px; height: 32px; }
+
+@keyframes successPop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.success-text {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.success-text h3 {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+.success-text p {
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+.message-box {
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-left: 3px solid var(--accent-1);
+  border-radius: var(--r-md);
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-2);
+  white-space: pre-line;
+  margin-bottom: 16px;
+}
+
+.discord-box {
+  background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(88, 101, 242, 0.03));
+  border: 1px solid rgba(88, 101, 242, 0.35);
+  border-radius: var(--r-md);
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.discord-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-sm);
+  background: #5865F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(88, 101, 242, 0.4);
+}
+
+.discord-icon svg { width: 24px; height: 24px; fill: #fff; }
+
+.discord-text { flex: 1; min-width: 0; }
+.discord-text strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+.discord-text span {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.discord-btn {
+  background: #5865F2;
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all var(--t-fast);
+  flex-shrink: 0;
+}
+
+.discord-btn:hover {
+  background: #4752c4;
+  transform: translateY(-1px);
+}
+
+/* Loading spinner nos botões */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════════
+   14. FAQ
+   ═══════════════════════════════════════════════════════════════ */
+.faq {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  background: var(--surface-1);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color var(--t-base);
+}
+
+.faq-item:hover { border-color: var(--border-2); }
+.faq-item.open { border-color: var(--border-accent); }
+
+.faq-q {
+  width: 100%;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-1);
+  letter-spacing: -0.2px;
+  transition: color var(--t-fast);
+}
+
+.faq-q:hover { color: var(--accent-3); }
+
+.faq-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--text-3);
+  transition: transform var(--t-base), color var(--t-base);
+}
+
+.faq-item.open .faq-icon {
+  transform: rotate(45deg);
+  color: var(--accent-3);
+}
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.faq-a-inner {
+  padding: 0 24px 20px;
+  font-size: 14px;
+  color: var(--text-3);
+  line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   15. CTA FINAL
+   ═══════════════════════════════════════════════════════════════ */
+.cta-final {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(99, 102, 241, 0.05));
+  border: 1px solid var(--border-accent);
+  border-radius: var(--r-xl);
+  padding: 60px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-final::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent 70%);
+  pointer-events: none;
+}
+
+.cta-final h2 {
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.cta-final p {
+  color: var(--text-3);
+  font-size: 16px;
+  margin-bottom: 32px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.cta-final .btn { position: relative; }
+
+/* ═══════════════════════════════════════════════════════════════
+   16. FOOTER
+   ═══════════════════════════════════════════════════════════════ */
+.footer {
+  border-top: 1px solid var(--border-1);
+  padding: 60px 0 32px;
+  background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.02));
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 48px;
+}
+
+.footer-brand p {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 16px;
+  line-height: 1.7;
+  max-width: 320px;
+}
+
+.footer-col h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-4);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.footer-col a {
+  display: block;
+  font-size: 14px;
+  color: var(--text-3);
+  padding: 6px 0;
+  transition: color var(--t-fast);
+}
+
+.footer-col a:hover { color: var(--accent-3); }
+
+.footer-bottom {
+  padding-top: 32px;
+  border-top: 1px solid var(--border-1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-bottom p {
+  font-size: 12px;
+  color: var(--text-4);
+}
+
+.footer-legal {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-legal span {
+  font-size: 12px;
+  color: var(--text-4);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.footer-legal svg {
+  width: 14px;
+  height: 14px;
+  color: var(--text-5);
+}
+
+@media (max-width: 720px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   17. TOAST
+   ═══════════════════════════════════════════════════════════════ */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--r-md);
+  padding: 14px 18px;
+  min-width: 260px;
+  max-width: 360px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: auto;
+  font-size: 14px;
+}
+
+.toast.removing {
+  animation: toastOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes toastIn {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastOut {
+  to { transform: translateX(120%); opacity: 0; }
+}
+
+.toast-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-icon svg { width: 16px; height: 16px; }
+
+.toast--success .toast-icon {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.toast--error .toast-icon {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.toast--info .toast-icon {
+  background: var(--accent-soft);
+  color: var(--accent-3);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   18. BACK TO TOP
+   ═══════════════════════════════════════════════════════════════ */
+.back-top {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 90;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all var(--t-base);
+  box-shadow: var(--shadow-md);
+}
+
+.back-top.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-top:hover {
+  background: var(--surface-3);
+  border-color: var(--border-accent);
+  color: var(--accent-3);
+  transform: translateY(-2px);
+}
+
+.back-top svg { width: 18px; height: 18px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   19. RESPONSIVO GERAL
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .section { padding: 72px 0; }
+  .container { padding: 0 20px; }
+  .hero { padding: 120px 0 60px; }
+  .hero-trust { gap: 20px; }
+  .trust-item { font-size: 12px; }
+  .checkout { padding: 20px 12px; }
+  .checkout-header { padding: 24px 20px 0; }
+  .checkout-body { padding: 0 20px 24px; }
+  .progress { padding: 20px; }
+  .cta-final { padding: 48px 24px; }
+  .toast-container { bottom: 16px; right: 16px; left: 16px; }
+  .toast { min-width: 0; }
+  .back-top { bottom: 16px; left: 16px; }
+}
+
+/* Acessibilidade — reduzir movimento */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
+}
 </style>
 </head>
 <body>
-<div class="container">
 
-  <header>
-    <div class="logo">Entrega via Gamepass</div>
-    <h1>Robux <span>Store</span></h1>
-    <p>Compra segura · Pagamento via Pix · Entrega guiada</p>
-  </header>
-
-  <div class="progresso">
-    <div class="bolinha ativa" data-step="1"></div>
-    <div class="bolinha" data-step="2"></div>
-    <div class="bolinha" data-step="3"></div>
-    <div class="bolinha" data-step="4"></div>
+<!-- ═══════════════════════════════════════════════════════════════
+     PRELOADER
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="preloader" id="preloader">
+  <div class="preloader-inner">
+    <div class="preloader-logo">Robux Store</div>
+    <div class="preloader-bar"></div>
   </div>
-
-  <!-- PASSO 1: escolher pacote -->
-  <section class="step ativo" id="step1">
-    <div class="card">
-      <h2>Escolha seu pacote</h2>
-      <p class="desc">Selecione a quantidade de Robux que deseja comprar.</p>
-
-      <div class="tabs" id="tabs"></div>
-
-      <div class="resumo" id="resumo" style="display:none;">
-        <div>
-          <div class="label">Você recebe</div>
-          <div class="qtd" id="resumoQtd"></div>
-        </div>
-        <div style="text-align:right;">
-          <div class="label">Total</div>
-          <div class="preco" id="resumoPreco"></div>
-        </div>
-      </div>
-
-      <button class="btn" id="btnContinuar" onclick="irParaStep2()" disabled>Continuar</button>
-    </div>
-  </section>
-
-  <!-- PASSO 2: dados -->
-  <section class="step" id="step2">
-    <div class="card">
-      <h2>Seus dados</h2>
-      <p class="desc">Precisamos do seu username do Roblox e um e-mail para o comprovante.</p>
-
-      <div class="campo">
-        <label for="username">Username do Roblox</label>
-        <input type="text" id="username" placeholder="ex: seu_username" autocomplete="off">
-        <small>Exatamente como aparece no seu perfil.</small>
-      </div>
-
-      <div class="campo">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" placeholder="seu@email.com" autocomplete="off">
-        <small>O comprovante será enviado para este endereço.</small>
-      </div>
-
-      <div class="erro" id="erroStep2"></div>
-
-      <button class="btn" onclick="gerarPagamento()">Gerar pagamento Pix</button>
-      <button class="btn btn-secundario" onclick="irParaStep1()">Voltar</button>
-    </div>
-  </section>
-
-  <!-- PASSO 3: pix -->
-  <section class="step" id="step3">
-    <div class="card">
-      <h2>Pagamento via Pix</h2>
-      <p class="desc">Abra o app do seu banco e escaneie o QR Code ou copie o código abaixo.</p>
-
-      <div class="qr-box" id="qrcode"></div>
-
-      <div class="pix-info">
-        <div class="linha"><span>Pacote</span><span id="infoPacote"></span></div>
-        <div class="linha"><span>Valor</span><span id="infoValor"></span></div>
-        <div class="linha"><span>Identificador</span><span id="infoTxid"></span></div>
-      </div>
-
-      <div class="payload" id="payload"></div>
-
-      <button class="btn btn-secundario" onclick="copiarPix()" id="btnCopiar">Copiar código Pix</button>
-      <button class="btn" onclick="confirmarPagamento()" style="margin-top:12px;">Já realizei o pagamento</button>
-      <button class="btn btn-secundario" onclick="irParaStep2()">Voltar</button>
-    </div>
-  </section>
-
-  <!-- PASSO 4: confirmação -->
-  <section class="step" id="step4">
-    <div class="card">
-      <div class="sucesso">
-        <div class="check">✓</div>
-        <h2>Pedido registrado</h2>
-        <p>Agora falta só um passo para receber seus Robux.</p>
-      </div>
-
-      <div class="mensagem" id="mensagemFinal"></div>
-
-      <div class="discord-box">
-        <div class="icon">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.099.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-          </svg>
-        </div>
-        <div class="texto">
-          <strong>Servidor de Suporte</strong>
-          <span>Envie o comprovante por lá para liberar sua entrega.</span>
-        </div>
-        <a href="https://discord.gg/SEU_CONVITE" target="_blank" rel="noopener">Abrir Discord</a>
-      </div>
-
-      <button class="btn btn-secundario" onclick="copiarMensagem()" style="margin-top:16px;" id="btnCopiarMsg">
-        Copiar mensagem
-      </button>
-      <button class="btn btn-secundario" onclick="novoPedido()">Fazer novo pedido</button>
-    </div>
-  </section>
-
-  <div class="rodape">
-    Entrega realizada via gamepass seguindo as diretrizes da plataforma.<br>
-    Em caso de dúvidas, o suporte é feito exclusivamente pelo Discord.
-  </div>
-
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     FUNDO ANIMADO
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="bg-layers">
+  <div class="bg-orb bg-orb--1"></div>
+  <div class="bg-orb bg-orb--2"></div>
+  <div class="bg-orb bg-orb--3"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-noise"></div>
+  <div class="bg-vignette"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════════ -->
+<header class="header" id="header">
+  <div class="container">
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L19.82 8 12 11.82 4.18 8 12 4.18zM4 9.5l7 3.5v6.82L4 16.32V9.5zm9 10.32v-6.82l7-3.5v6.82l-7 3.5z"/></svg>
+        </div>
+        <span class="logo-text">Robux<span>Store</span></span>
+      </a>
+
+      <nav class="nav">
+        <a href="#pacotes" class="nav-link">Pacotes</a>
+        <a href="#como-funciona" class="nav-link">Como funciona</a>
+        <a href="#vantagens" class="nav-link">Vantagens</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+
+      <div class="header-cta">
+        <div class="header-status">
+          <span class="status-dot"></span>
+          <span>Online agora</span>
+        </div>
+        <a href="#pacotes" class="btn btn--primary btn--sm">
+          Comprar agora
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content reveal">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Entrega via gamepass · Suporte dedicado
+      </div>
+
+      <h1 class="hero-title">
+        Seus Robux, <span class="accent">entregues com segurança</span>
+      </h1>
+
+      <p class="hero-sub">
+        Compra 100% guiada, pagamento via Pix e suporte humano em cada etapa.
+        Sem enrolação, sem risco, sem letras miúdas.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#pacotes" class="btn btn--primary btn--lg">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Escolher pacote
+        </a>
+        <a href="#como-funciona" class="btn btn--outline btn--lg">
+          Como funciona
+        </a>
+      </div>
+
+      <div class="hero-trust">
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          Compra protegida
+        </div>
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Entrega em até 24h
+        </div>
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Suporte humano
+        </div>
+        <div class="trust-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          Avaliação 4.9/5
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal">
+      <div class="hero-card">
+        <div class="hero-card-label">Entrega</div>
+        <div class="hero-card-value">Até 24 horas</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">Pagamento</div>
+        <div class="hero-card-value accent">Pix seguro</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-label">Suporte</div>
+        <div class="hero-card-value">Discord 24/7</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     STATS
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="reveal">
+        <div class="stat-value" data-count="12500">0</div>
+        <div class="stat-label">Pedidos entregues</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-value" data-count="98">0</div>
+        <div class="stat-label">% de satisfação</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-value" data-count="24">0</div>
+        <div class="stat-label">Horas de entrega</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-value" data-count="7">0</div>
+        <div class="stat-label">Dias de suporte</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     COMO FUNCIONA
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="como-funciona">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Processo simples
+      </div>
+      <h2 class="section-title">Como <span class="gradient">funciona</span></h2>
+      <p class="section-sub">
+        Quatro passos. Do pagamento à entrega, você acompanha cada etapa com nosso time.
+      </p>
+    </div>
+
+    <div class="steps">
+      <div class="step-item reveal">
+        <div class="step-num">01</div>
+        <h3>Escolha o pacote</h3>
+        <p>Selecione a quantidade de Robux que você precisa. De 200 a 2.000, com preço transparente.</p>
+      </div>
+      <div class="step-item reveal">
+        <div class="step-num">02</div>
+        <h3>Pague com Pix</h3>
+        <p>QR Code gerado na hora. Pague no app do seu banco em segundos, com identificador único do pedido.</p>
+      </div>
+      <div class="step-item reveal">
+        <div class="step-num">03</div>
+        <h3>Envie o comprovante</h3>
+        <p>Após o pagamento, mande o print no nosso Discord. Nosso time confirma em minutos.</p>
+      </div>
+      <div class="step-item reveal">
+        <div class="step-num">04</div>
+        <h3>Receba seus Robux</h3>
+        <p>Te guiamos na criação da gamepass e entregamos os Robux direto na sua conta Roblox.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     VANTAGENS
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="vantagens">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Por que escolher
+      </div>
+      <h2 class="section-title">Feito pra ser <span class="gradient">confiável</span></h2>
+      <p class="section-sub">
+        Cada detalhe foi pensado pra você comprar sem medo e receber sem susto.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Compra 100% protegida</h3>
+        <p>Pagamento via Pix com identificador único. Você tem o comprovante de cada etapa registrado.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Entrega rápida</h3>
+        <p>Após a confirmação do pagamento, seus Robux chegam em até 24 horas — muitas vezes em minutos.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Suporte humano no Discord</h3>
+        <p>Nada de robô. Nosso time te atende pessoalmente e guia cada passo da entrega.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h3>Preço justo e transparente</h3>
+        <p>Sem taxas escondidas, sem surpresas no checkout. O valor que você vê é o valor que você paga.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <h3>Entrega via gamepass</h3>
+        <p>Método seguro que respeita as diretrizes da Roblox e protege tanto você quanto nós.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 15.09 8.26 22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+        </div>
+        <h3>Reputação construída</h3>
+        <p>Milhares de pedidos entregues e uma base de clientes que volta. Confiança não se compra.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PACOTES
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="pacotes">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Catálogo
+      </div>
+      <h2 class="section-title">Escolha seu <span class="gradient">pacote</span></h2>
+      <p class="section-sub">
+        De 200 a 2.000 Robux. Clique num pacote para iniciar a compra.
+      </p>
+    </div>
+
+    <div class="packages-grid" id="packagesGrid">
+      <!-- preenchido por JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FAQ
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="faq">
+  <div class="container">
+    <div class="section-head section-head--center reveal">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Dúvidas frequentes
+      </div>
+      <h2 class="section-title">Perguntas <span class="gradient">frequentes</span></h2>
+    </div>
+
+    <div class="faq">
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>Como funciona a entrega dos Robux?</span>
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            A entrega é feita via gamepass. Após o pagamento, nosso time te orienta a criar uma gamepass na sua conta Roblox com o valor exato da compra. Assim que ela é publicada, compramos a gamepass e os Robux caem direto na sua conta.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>Em quanto tempo recebo meus Robux?</span>
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Após a confirmação do pagamento, o prazo máximo é de 24 horas. Na maioria dos casos, a entrega acontece em minutos, dependendo da disponibilidade do nosso time no Discord.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>É seguro? Tem risco de ban?</span>
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Utilizamos o método de gamepass, que é o mais seguro e alinhado às diretrizes da plataforma. Seguindo nossas instruções, o risco é mínimo. Nosso time te acompanha em cada passo para garantir que tudo corra bem.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>Quais formas de pagamento vocês aceitam?</span>
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Trabalhamos exclusivamente com Pix. É rápido, seguro e o identificador único de cada transação fica registrado no seu comprovante.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>E se eu não receber meus Robux?</span>
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Nosso compromisso é com a entrega. Se por qualquer motivo houver atraso, você é atendido diretamente pelo Discord e, se a entrega não for possível, o valor é integralmente devolvido.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <button class="faq-q">
+          <span>Preciso passar minha senha da Roblox?</span>
+          <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <div class="faq-a">
+          <div class="faq-a-inner">
+            Nunca. Jamais pedimos senha, código de verificação ou qualquer dado sensível da sua conta. Todo o processo é feito via gamepass, sem acesso à sua conta.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CTA FINAL
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="section section--sm">
+  <div class="container">
+    <div class="cta-final reveal">
+      <h2>Pronto pra turbinar sua conta?</h2>
+      <p>Escolha seu pacote, pague com Pix e receba seus Robux com toda a segurança do mundo.</p>
+      <a href="#pacotes" class="btn btn--primary btn--lg">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Escolher pacote agora
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <div class="logo-mark">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L19.82 8 12 11.82 4.18 8 12 4.18zM4 9.5l7 3.5v6.82L4 16.32V9.5zm9 10.32v-6.82l7-3.5v6.82l-7 3.5z"/></svg>
+          </div>
+          <span class="logo-text">Robux<span>Store</span></span>
+        </a>
+        <p>
+          Sua loja de confiança para comprar Robux com segurança, agilidade e suporte humano em cada pedido.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Loja</h4>
+        <a href="#pacotes">Pacotes</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#vantagens">Vantagens</a>
+        <a href="#faq">FAQ</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Suporte</h4>
+        <a href="#">Discord</a>
+        <a href="#">Central de ajuda</a>
+        <a href="#">Status do pedido</a>
+        <a href="#">Contato</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Termos de uso</a>
+        <a href="#">Política de privacidade</a>
+        <a href="#">Política de reembolso</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Robux Store. Todos os direitos reservados.</p>
+      <div class="footer-legal">
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Pagamento protegido
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          SSL ativo
+        </span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CHECKOUT MODAL
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="checkout" id="checkout">
+  <div class="checkout-modal" id="checkoutModal">
+    <button class="checkout-close" onclick="fecharCheckout()" aria-label="Fechar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+
+    <div class="checkout-header">
+      <div class="checkout-title" id="checkoutTitle">Finalizar compra</div>
+      <div class="checkout-desc" id="checkoutDesc">Preencha seus dados para gerar o Pix</div>
+    </div>
+
+    <div class="progress">
+      <div class="progress-dot active" data-step="1"></div>
+      <div class="progress-dot" data-step="2"></div>
+      <div class="progress-dot" data-step="3"></div>
+    </div>
+
+    <div class="checkout-body">
+
+      <!-- PASSO 1 — DADOS -->
+      <div class="panel active" id="panel1">
+        <div class="summary">
+          <div class="summary-left">
+            <div class="label">Você recebe</div>
+            <div class="value" id="sumRobux">—</div>
+          </div>
+          <div class="summary-right">
+            <div class="label">Total</div>
+            <div class="value" id="sumPreco">—</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="inpUsername">Username do Roblox</label>
+          <input type="text" class="field-input" id="inpUsername" placeholder="ex: seu_username" autocomplete="off" spellcheck="false">
+          <span class="field-hint">Exatamente como aparece no seu perfil da Roblox.</span>
+          <span class="field-error" id="errUsername">Username inválido.</span>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="inpEmail">E-mail para o comprovante</label>
+          <input type="email" class="field-input" id="inpEmail" placeholder="seu@email.com" autocomplete="email">
+          <span class="field-hint">Enviaremos os dados do pedido para este endereço.</span>
+          <span class="field-error" id="errEmail">E-mail inválido.</span>
+        </div>
+
+        <div class="alert alert--error" id="alert1"></div>
+
+        <button class="btn btn--primary btn--block btn--lg" id="btnGerar" onclick="gerarPagamento()">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Gerar pagamento Pix
+        </button>
+      </div>
+
+      <!-- PASSO 2 — PIX -->
+      <div class="panel" id="panel2">
+        <div class="pix-qr" id="pixQr"></div>
+
+        <div class="pix-info">
+          <div class="pix-info-row">
+            <span class="k">Pacote</span>
+            <span class="v" id="pixPacote">—</span>
+          </div>
+          <div class="pix-info-row">
+            <span class="k">Valor</span>
+            <span class="v accent" id="pixValor">—</span>
+          </div>
+          <div class="pix-info-row">
+            <span class="k">Identificador</span>
+            <span class="v" id="pixTxid">—</span>
+          </div>
+        </div>
+
+        <div class="pix-payload" id="pixPayload">—</div>
+
+        <div class="pix-timer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span>Aguardando confirmação do pagamento...</span>
+        </div>
+
+        <button class="btn btn--ghost btn--block" id="btnCopiar" onclick="copiarPix()">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Copiar código Pix</span>
+        </button>
+
+        <button class="btn btn--primary btn--block btn--lg" onclick="confirmarPagamento()" style="margin-top:10px;">
+          Já realizei o pagamento
+        </button>
+      </div>
+
+      <!-- PASSO 3 — SUCESSO -->
+      <div class="panel" id="panel3">
+        <div class="success-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+
+        <div class="success-text">
+          <h3>Pedido registrado</h3>
+          <p>Falta só um passo para receber seus Robux.</p>
+        </div>
+
+        <div class="message-box" id="mensagemFinal"></div>
+
+        <div class="discord-box">
+          <div class="discord-icon">
+            <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.79 19.79 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.099.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          </div>
+          <div class="discord-text">
+            <strong>Servidor de Suporte</strong>
+            <span>Envie o comprovante por lá para liberar a entrega.</span>
+          </div>
+          <a class="discord-btn" href="https://discord.gg/SEU_CONVITE" target="_blank" rel="noopener">Entrar</a>
+        </div>
+
+        <button class="btn btn--ghost btn--block" onclick="copiarMensagem()" id="btnCopiarMsg">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Copiar mensagem</span>
+        </button>
+
+        <button class="btn btn--outline btn--block" onclick="novoPedido()" style="margin-top:10px;">
+          Fazer novo pedido
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     BACK TO TOP
+     ═══════════════════════════════════════════════════════════════ -->
+<button class="back-top" id="backTop" onclick="scrollToTop()" aria-label="Voltar ao topo">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TOAST
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="toast-container" id="toastContainer"></div>
+
 <script>
-/* ============================================================
-   CONFIGURAÇÃO — edite aqui
-   ============================================================ */
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURAÇÃO
+   ═══════════════════════════════════════════════════════════════ */
 const CONFIG = {
-  // Pix
+  /* Pix */
   PIX_KEY: '4c3805c3-a89b-4275-a721-4efe4e2bc75b',
   PIX_NOME: 'ROBUX STORE',
   PIX_CIDADE: 'SAO PAULO',
 
-  // Discord
+  /* Discord */
   DISCORD_LINK: 'https://discord.gg/SEU_CONVITE',
 
-  // EmailJS — crie conta grátis em emailjs.com
-  // Se deixar vazio, o e-mail não é enviado (a tela de confirmação aparece normal)
-  EMAILJS_PUBLIC_KEY: '',    // ex: 'aBcD1234XyZ...'
-  EMAILJS_SERVICE_ID: '',    // ex: 'service_abc123'
-  EMAILJS_TEMPLATE_ID: '',   // ex: 'template_xyz789'
+  /* EmailJS — opcional. Deixe vazio pra desativar */
+  EMAILJS_PUBLIC_KEY: '',
+  EMAILJS_SERVICE_ID: '',
+  EMAILJS_TEMPLATE_ID: '',
 };
 
-/* Pacotes: Robux + preço em reais. Edite os preços como quiser. */
+/* Pacotes disponíveis */
 const PACKS = [
-  { robux: 200,  preco: 10  },
-  { robux: 300,  preco: 15  },
-  { robux: 400,  preco: 20  },
-  { robux: 500,  preco: 25  },
-  { robux: 600,  preco: 30  },
-  { robux: 700,  preco: 35  },
-  { robux: 800,  preco: 40  },
-  { robux: 900,  preco: 45  },
-  { robux: 1000, preco: 50  },
-  { robux: 1200, preco: 60  },
-  { robux: 1500, preco: 75  },
-  { robux: 2000, preco: 100 },
+  { robux: 200,  preco: 10,  badge: null },
+  { robux: 300,  preco: 15,  badge: null },
+  { robux: 400,  preco: 20,  badge: null },
+  { robux: 500,  preco: 25,  badge: 'Popular' },
+  { robux: 600,  preco: 30,  badge: null },
+  { robux: 700,  preco: 35,  badge: null },
+  { robux: 800,  preco: 40,  badge: null },
+  { robux: 900,  preco: 45,  badge: null },
+  { robux: 1000, preco: 50,  badge: 'Melhor valor' },
+  { robux: 1200, preco: 60,  badge: null },
+  { robux: 1500, preco: 75,  badge: null },
+  { robux: 2000, preco: 100, badge: null },
 ];
 
-/* ============================================================
-   ESTADO
-   ============================================================ */
-let packSelecionado = null;
-let pedidoAtual = null;
+/* ═══════════════════════════════════════════════════════════════
+   ESTADO GLOBAL
+   ═══════════════════════════════════════════════════════════════ */
+const state = {
+  pacoteSelecionado: null,
+  pedidoAtual: null,
+};
 
-/* ============================================================
-   NAVEGAÇÃO
-   ============================================================ */
-function irParaStep(n) {
-  document.querySelectorAll('.step').forEach(el => el.classList.remove('ativo'));
-  document.getElementById('step' + n).classList.add('ativo');
-  document.querySelectorAll('.progresso .bolinha').forEach(el => {
-    const s = parseInt(el.dataset.step);
-    el.classList.toggle('ativa', s === n);
-    el.classList.toggle('feita', s < n);
-  });
+/* ═══════════════════════════════════════════════════════════════
+   UTILITÁRIOS
+   ═══════════════════════════════════════════════════════════════ */
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+function formatBRL(valor) {
+  return 'R$ ' + valor.toFixed(2).replace('.', ',');
+}
+
+function formatNumber(n) {
+  return n.toLocaleString('pt-BR');
+}
+
+function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function irParaStep1() { irParaStep(1); }
-function irParaStep2() {
-  if (!packSelecionado) return;
-  irParaStep(2);
+/* ═══════════════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════════════ */
+const toastIcons = {
+  success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
+};
+
+function toast(msg, tipo = 'info', duracao = 3200) {
+  const container = $('#toastContainer');
+  const el = document.createElement('div');
+  el.className = 'toast toast--' + tipo;
+  el.innerHTML = `
+    <div class="toast-icon">${toastIcons[tipo]}</div>
+    <div class="toast-msg">${msg}</div>
+  `;
+  container.appendChild(el);
+
+  setTimeout(() => {
+    el.classList.add('removing');
+    setTimeout(() => el.remove(), 300);
+  }, duracao);
 }
 
-/* ============================================================
-   TABS DE PACOTES
-   ============================================================ */
-function renderizarTabs() {
-  const tabs = document.getElementById('tabs');
-  tabs.innerHTML = PACKS.map((p, i) => `
-    <button class="tab" data-idx="${i}">${p.robux.toLocaleString('pt-BR')} Robux</button>
+/* ═══════════════════════════════════════════════════════════════
+   HEADER — scroll state
+   ═══════════════════════════════════════════════════════════════ */
+const header = $('#header');
+const backTop = $('#backTop');
+
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  header.classList.toggle('scrolled', y > 20);
+  backTop.classList.toggle('show', y > 600);
+}, { passive: true });
+
+/* ═══════════════════════════════════════════════════════════════
+   REVEAL ON SCROLL
+   ═══════════════════════════════════════════════════════════════ */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+function observarReveals() {
+  $$('.reveal').forEach((el) => revealObserver.observe(el));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTADOR ANIMADO DAS STATS
+   ═══════════════════════════════════════════════════════════════ */
+function animarContadores() {
+  const stats = $$('.stat-value[data-count]');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      const alvo = parseInt(el.dataset.count);
+      const duracao = 1600;
+      const inicio = performance.now();
+
+      function passo(now) {
+        const t = Math.min((now - inicio) / duracao, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        const atual = Math.floor(alvo * eased);
+        el.textContent = formatNumber(atual) + (alvo >= 100 ? '+' : '');
+        if (t < 1) requestAnimationFrame(passo);
+        else el.textContent = formatNumber(alvo) + (alvo >= 100 ? '+' : '');
+      }
+
+      requestAnimationFrame(passo);
+      obs.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+
+  stats.forEach((s) => obs.observe(s));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDERIZAR PACOTES
+   ═══════════════════════════════════════════════════════════════ */
+function renderPacotes() {
+  const grid = $('#packagesGrid');
+  grid.innerHTML = PACKS.map((p, i) => `
+    <div class="package" data-idx="${i}">
+      ${p.badge ? `<div class="package-badge">${p.badge}</div>` : ''}
+      <div class="package-robux">${formatNumber(p.robux)}</div>
+      <div class="package-robux-label">Robux</div>
+      <div class="package-price">
+        ${formatBRL(p.preco)}
+        <small>pagamento via Pix</small>
+      </div>
+    </div>
   `).join('');
 
-  tabs.querySelectorAll('.tab').forEach(btn => {
-    btn.addEventListener('click', () => selecionarPack(parseInt(btn.dataset.idx)));
+  grid.querySelectorAll('.package').forEach((card) => {
+    card.addEventListener('click', () => {
+      const idx = parseInt(card.dataset.idx);
+      abrirCheckout(idx);
+    });
   });
 }
 
-function selecionarPack(idx) {
-  packSelecionado = PACKS[idx];
+/* ═══════════════════════════════════════════════════════════════
+   CHECKOUT — ABRIR / FECHAR
+   ═══════════════════════════════════════════════════════════════ */
+const checkout = $('#checkout');
 
-  document.querySelectorAll('.tab').forEach((el, i) => {
-    el.classList.toggle('ativa', i === idx);
-  });
+function abrirCheckout(idx) {
+  state.pacoteSelecionado = PACKS[idx];
+  state.pedidoAtual = null;
 
-  document.getElementById('resumo').style.display = 'flex';
-  document.getElementById('resumoQtd').textContent = packSelecionado.robux.toLocaleString('pt-BR') + ' Robux';
-  document.getElementById('resumoPreco').textContent = 'R$ ' + packSelecionado.preco.toFixed(2).replace('.', ',');
-  document.getElementById('btnContinuar').disabled = false;
+  // atualiza resumo
+  $('#sumRobux').textContent = formatNumber(state.pacoteSelecionado.robux) + ' Robux';
+  $('#sumPreco').textContent = formatBRL(state.pacoteSelecionado.preco);
+
+  // limpa campos
+  $('#inpUsername').value = '';
+  $('#inpEmail').value = '';
+  $('#errUsername').classList.remove('active');
+  $('#errEmail').classList.remove('active');
+  $('#alert1').classList.remove('active');
+
+  irParaPainel(1);
+  checkout.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(() => $('#inpUsername').focus(), 300);
 }
 
-/* ============================================================
-   PIX — geração do payload EMV
-   ============================================================ */
+function fecharCheckout() {
+  checkout.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+checkout.addEventListener('click', (e) => {
+  if (e.target === checkout) fecharCheckout();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && checkout.classList.contains('open')) {
+    fecharCheckout();
+  }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVEGAÇÃO ENTRE PAINÉIS
+   ═══════════════════════════════════════════════════════════════ */
+function irParaPainel(n) {
+  $$('.panel').forEach((p) => p.classList.remove('active'));
+  $('#panel' + n).classList.add('active');
+
+  $$('.progress-dot').forEach((d) => {
+    const s = parseInt(d.dataset.step);
+    d.classList.toggle('active', s === n);
+    d.classList.toggle('done', s < n);
+  });
+
+  const titles = {
+    1: ['Finalizar compra', 'Preencha seus dados para gerar o Pix'],
+    2: ['Pagamento via Pix', 'Escaneie o QR Code no seu banco'],
+    3: ['Pedido registrado', 'Falta só um passo para receber'],
+  };
+  $('#checkoutTitle').textContent = titles[n][0];
+  $('#checkoutDesc').textContent = titles[n][1];
+
+  // scroll do modal pro topo
+  $('#checkoutModal').scrollTop = 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PIX — geração de payload EMV
+   ═══════════════════════════════════════════════════════════════ */
 function tlv(id, value) {
   const len = String(value.length).padStart(2, '0');
   return id + len + value;
@@ -630,7 +2667,6 @@ function gerarTxid() {
 function gerarPixPayload(valor, txid) {
   const nome = limparAscii(CONFIG.PIX_NOME, 25);
   const cidade = limparAscii(CONFIG.PIX_CIDADE, 15);
-
   const gui = tlv('00', 'br.gov.bcb.pix') + tlv('01', CONFIG.PIX_KEY);
 
   const semCrc =
@@ -648,125 +2684,161 @@ function gerarPixPayload(valor, txid) {
   return semCrc + crc16(semCrc);
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════════
+   VALIDAÇÃO
+   ═══════════════════════════════════════════════════════════════ */
+function validarUsername(v) {
+  return /^[A-Za-z0-9_]{3,20}$/.test(v);
+}
+
+function validarEmail(v) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
+
+/* ═══════════════════════════════════════════════════════════════
    GERAR PAGAMENTO
-   ============================================================ */
+   ═══════════════════════════════════════════════════════════════ */
 function gerarPagamento() {
-  const username = document.getElementById('username').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const erro = document.getElementById('erroStep2');
-  erro.classList.remove('ativo');
+  const username = $('#inpUsername').value.trim();
+  const email = $('#inpEmail').value.trim();
 
-  if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) {
-    erro.textContent = 'Username inválido. Use 3 a 20 caracteres (letras, números e _).';
-    erro.classList.add('ativo');
+  $('#errUsername').classList.remove('active');
+  $('#errEmail').classList.remove('active');
+  $('#alert1').classList.remove('active');
+
+  let ok = true;
+
+  if (!validarUsername(username)) {
+    $('#errUsername').classList.add('active');
+    ok = false;
+  }
+  if (!validarEmail(email)) {
+    $('#errEmail').classList.add('active');
+    ok = false;
+  }
+
+  if (!ok) {
+    toast('Corrija os campos em destaque.', 'error');
     return;
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    erro.textContent = 'E-mail inválido.';
-    erro.classList.add('ativo');
-    return;
-  }
 
-  const txid = gerarTxid();
-  const payload = gerarPixPayload(packSelecionado.preco, txid);
+  const btn = $('#btnGerar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Gerando Pix...';
 
-  pedidoAtual = {
-    username,
-    email,
-    robux: packSelecionado.robux,
-    preco: packSelecionado.preco,
-    txid,
-    payload,
-    criadoEm: new Date(),
-  };
+  setTimeout(() => {
+    const txid = gerarTxid();
+    const payload = gerarPixPayload(state.pacoteSelecionado.preco, txid);
 
-  // Renderiza Pix
-  document.getElementById('infoPacote').textContent = packSelecionado.robux.toLocaleString('pt-BR') + ' Robux';
-  document.getElementById('infoValor').textContent = 'R$ ' + packSelecionado.preco.toFixed(2).replace('.', ',');
-  document.getElementById('infoTxid').textContent = txid;
-  document.getElementById('payload').textContent = payload;
+    state.pedidoAtual = {
+      username,
+      email,
+      robux: state.pacoteSelecionado.robux,
+      preco: state.pacoteSelecionado.preco,
+      txid,
+      payload,
+    };
 
-  const qrContainer = document.getElementById('qrcode');
-  qrContainer.innerHTML = '';
-  new QRCode(qrContainer, {
-    text: payload,
-    width: 200,
-    height: 200,
-    colorDark: '#000000',
-    colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.M,
-  });
+    // preenche painel
+    $('#pixPacote').textContent = formatNumber(state.pacoteSelecionado.robux) + ' Robux';
+    $('#pixValor').textContent = formatBRL(state.pacoteSelecionado.preco);
+    $('#pixTxid').textContent = txid;
+    $('#pixPayload').textContent = payload;
 
-  irParaStep(3);
+    // gera QR
+    const qrBox = $('#pixQr');
+    qrBox.innerHTML = '';
+    new QRCode(qrBox, {
+      text: payload,
+      width: 200,
+      height: 200,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M,
+    });
+
+    irParaPainel(2);
+
+    btn.disabled = false;
+    btn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Gerar pagamento Pix';
+
+    toast('Pix gerado com sucesso.', 'success');
+  }, 500);
 }
 
-/* ============================================================
-   COPIAR
-   ============================================================ */
+/* ═══════════════════════════════════════════════════════════════
+   COPIAR PIX
+   ═══════════════════════════════════════════════════════════════ */
 async function copiarPix() {
-  if (!pedidoAtual) return;
+  if (!state.pedidoAtual) return;
   try {
-    await navigator.clipboard.writeText(pedidoAtual.payload);
-    const btn = document.getElementById('btnCopiar');
-    const original = btn.textContent;
-    btn.textContent = '✓ Copiado';
-    setTimeout(() => btn.textContent = original, 2000);
+    await navigator.clipboard.writeText(state.pedidoAtual.payload);
+    const btn = $('#btnCopiar');
+    const span = btn.querySelector('span');
+    const original = span.textContent;
+    span.textContent = 'Copiado';
+    toast('Código Pix copiado.', 'success', 2000);
+    setTimeout(() => span.textContent = original, 1800);
   } catch (e) {
-    alert('Não foi possível copiar. Selecione o código manualmente.');
+    toast('Não foi possível copiar. Selecione manualmente.', 'error');
   }
 }
 
-/* ============================================================
-   CONFIRMAR PAGAMENTO → passo 4
-   ============================================================ */
+/* ═══════════════════════════════════════════════════════════════
+   CONFIRMAR PAGAMENTO
+   ═══════════════════════════════════════════════════════════════ */
 async function confirmarPagamento() {
-  if (!pedidoAtual) return;
+  if (!state.pedidoAtual) return;
 
-  // Dispara e-mail em background (não bloqueia a UI)
-  enviarEmail(pedidoAtual).catch(() => {});
+  enviarEmail(state.pedidoAtual).catch(() => {});
 
-  // Monta a mensagem profissional
   const mensagem =
-`Pedido ${pedidoAtual.txid} registrado.
+`Pedido ${state.pedidoAtual.txid} registrado.
 
-Recebemos sua solicitação de ${pedidoAtual.robux.toLocaleString('pt-BR')} Robux no valor de R$ ${pedidoAtual.preco.toFixed(2).replace('.', ',')}.
+Recebemos sua solicitação de ${formatNumber(state.pedidoAtual.robux)} Robux no valor de ${formatBRL(state.pedidoAtual.preco)}.
 
 Para concluir a entrega, tire um print desta tela e envie junto com o comprovante de pagamento no nosso servidor do Discord.
 
 Nossa equipe irá te orientar passo a passo na criação da gamepass para você receber seus Robux com segurança.`;
 
-  document.getElementById('mensagemFinal').textContent = mensagem;
-  irParaStep(4);
+  $('#mensagemFinal').textContent = mensagem;
+  irParaPainel(3);
+  toast('Pedido registrado. Envie o comprovante no Discord.', 'success', 4500);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   COPIAR MENSAGEM FINAL
+   ═══════════════════════════════════════════════════════════════ */
 async function copiarMensagem() {
-  const msg = document.getElementById('mensagemFinal').textContent;
+  const msg = $('#mensagemFinal').textContent;
   try {
     await navigator.clipboard.writeText(msg);
-    const btn = document.getElementById('btnCopiarMsg');
-    const original = btn.textContent;
-    btn.textContent = '✓ Copiado';
-    setTimeout(() => btn.textContent = original, 2000);
-  } catch (e) {}
+    const btn = $('#btnCopiarMsg');
+    const span = btn.querySelector('span');
+    const original = span.textContent;
+    span.textContent = 'Copiado';
+    toast('Mensagem copiada.', 'success', 2000);
+    setTimeout(() => span.textContent = original, 1800);
+  } catch (e) {
+    toast('Não foi possível copiar.', 'error');
+  }
 }
 
-/* ============================================================
-   ENVIO DE E-MAIL (EmailJS)
-   ============================================================ */
+/* ═══════════════════════════════════════════════════════════════
+   ENVIO DE E-MAIL
+   ═══════════════════════════════════════════════════════════════ */
 async function enviarEmail(pedido) {
   if (!CONFIG.EMAILJS_PUBLIC_KEY || !CONFIG.EMAILJS_SERVICE_ID || !CONFIG.EMAILJS_TEMPLATE_ID) {
-    // não configurado — apenas ignora
     return;
   }
 
   try {
     emailjs.init({ publicKey: CONFIG.EMAILJS_PUBLIC_KEY });
 
-    const corpoEmail =
+    const corpo =
 `Pedido ${pedido.txid} registrado.
 
-Recebemos sua solicitação de ${pedido.robux.toLocaleString('pt-BR')} Robux no valor de R$ ${pedido.preco.toFixed(2).replace('.', ',')}.
+Recebemos sua solicitação de ${formatNumber(pedido.robux)} Robux no valor de ${formatBRL(pedido.preco)}.
 
 Para concluir a entrega, tire um print desta mensagem e envie junto com o comprovante de pagamento no nosso servidor do Discord:
 ${CONFIG.DISCORD_LINK}
@@ -777,35 +2849,78 @@ Nossa equipe irá te orientar passo a passo na criação da gamepass para você 
       to_email: pedido.email,
       to_name: pedido.username,
       subject: `Pedido ${pedido.txid} — Robux Store`,
-      message: corpoEmail,
+      message: corpo,
       txid: pedido.txid,
       robux: pedido.robux,
       preco: pedido.preco.toFixed(2),
       discord_link: CONFIG.DISCORD_LINK,
     });
   } catch (e) {
-    console.warn('Falha ao enviar e-mail:', e);
+    console.warn('EmailJS falhou:', e);
   }
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════════
    NOVO PEDIDO
-   ============================================================ */
+   ═══════════════════════════════════════════════════════════════ */
 function novoPedido() {
-  packSelecionado = null;
-  pedidoAtual = null;
-  document.getElementById('username').value = '';
-  document.getElementById('email').value = '';
-  document.getElementById('resumo').style.display = 'none';
-  document.getElementById('btnContinuar').disabled = true;
-  document.querySelectorAll('.tab').forEach(el => el.classList.remove('ativa'));
-  irParaStep(1);
+  state.pacoteSelecionado = null;
+  state.pedidoAtual = null;
+  irParaPainel(1);
+  fecharCheckout();
+  setTimeout(() => scrollToTop(), 200);
 }
 
-/* ============================================================
+/* ═══════════════════════════════════════════════════════════════
+   FAQ — accordion
+   ═══════════════════════════════════════════════════════════════ */
+function initFAQ() {
+  $$('.faq-item').forEach((item) => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+
+      // fecha todos
+      $$('.faq-item').forEach((i) => {
+        i.classList.remove('open');
+        i.querySelector('.faq-a').style.maxHeight = '0px';
+      });
+
+      // abre o atual (se não estava aberto)
+      if (!isOpen) {
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
    INICIALIZAÇÃO
-   ============================================================ */
-renderizarTabs();
+   ═══════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  renderPacotes();
+  observarReveals();
+  animarContadores();
+  initFAQ();
+
+  // Preloader
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      $('#preloader').classList.add('hidden');
+    }, 400);
+  });
+
+  // Fallback: some o preloader em 2.5s caso o load não dispare
+  setTimeout(() => {
+    $('#preloader').classList.add('hidden');
+  }, 2500);
+
+  console.log('%cRobux Store', 'font-size:20px;font-weight:900;color:#8b5cf6;');
+  console.log('%cPronto para atender.', 'color:#9a9aa8;');
+});
 </script>
 </body>
-  </html>
+         </html>
